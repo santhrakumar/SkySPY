@@ -1,0 +1,30 @@
+name: SPY Monthly Swing Monitor
+
+on:
+  schedule:
+    # Runs at 14:00 UTC (10:00 AM EST) Monday through Friday
+    - cron: '0 14 * * 1-5'
+  workflow_dispatch:
+    # Allows you to trigger the bot manually from the Actions tab
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install yfinance pandas requests python-dotenv
+
+      - name: Run Swing Detection
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python spy_swing_bot.py
